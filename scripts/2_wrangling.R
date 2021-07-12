@@ -1,18 +1,28 @@
 
 # Bibliotecas -------------------------------------------------------------
 library(tidyverse)
-library(sf)
+library(ggmap)
 
-# Geocode dos Endereços ---------------------------------------------------
-# sinistrosGeocode <- data.frame(stringsAsFactors = FALSE)
+# Cria uma variavel de endereço completo, com nome da rua, numero, bairro,
+# cidade e estado, tornando os endereços únicos (chave)
+sinistrosRecife <-
+sinistrosRecife %>%
+  mutate(enderecoCompleto = paste(endereco, numero, bairro,
+                                  "Recife - Pernambuco", sep = ", "))
 
+# Registro da API do Google -----------------------------------------------
+API <- "API inserida aqui"
+register_google(key = API)
+
+
+# Enriquecendo Latitudes e Longitudes -------------------------------------
 # coleta, via API da Google, as latitudes e longitudes dos endereços
 # da base de dados sinistrosRecife
- 
+
 for(i in 1:nrow(sinistrosRecife)){
   # O tryCatch abaixo resolve o problema dos erros específicos que ocorrem
   # nos casos 973, 1840, 2022, 2358, 2505, 3897, 4139, 4387, e 4549
-  result <- tryCatch(geocode(sinistrosRecife$endereco[i],
+  result <- tryCatch(geocode(sinistrosRecife$enderecoCompleto[i],
                              output = "latlon",
                              source = "google",
                              region = "BR"),
@@ -22,4 +32,4 @@ for(i in 1:nrow(sinistrosRecife)){
 }
 
 # Cria arquivo .rds
-export(sinistrosRecife, "bases_tratadas/sinistrosRecife.rds")
+rio::export(sinistrosRecife, "bases_tratadas/sinistrosRecife.rds")
