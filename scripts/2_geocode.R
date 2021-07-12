@@ -1,5 +1,6 @@
 
 # Bibliotecas -------------------------------------------------------------
+install.packages(c("rio", "tidyverse", "sf", "ggmap"))
 library(rio)
 library(tidyverse)
 library(sf)
@@ -11,7 +12,11 @@ library(ggmap)
 # Loop through the addresses to get the latitude and longitude of each address and add it to the
 # origAddress data frame in new columns lat and lon
 for(i in 1:nrow(sinistrosRecife)){
-  result <- geocode(sinistrosRecife$endereco[i], output = "latlona", source = "google")
+  result <- tryCatch(geocode(sinistrosRecife$endereco[i],
+                             output = "latlon",
+                             source = "google",
+                             ext = "com.br"),
+                     warning = function(w) data.frame(lon = NA, lat = NA, address = NA))
   sinistrosRecife$lon[i] <- as.numeric(result[1])
   sinistrosRecife$lat[i] <- as.numeric(result[2])
   sinistrosRecife$geoAddress[i] <- as.character(result[3])
