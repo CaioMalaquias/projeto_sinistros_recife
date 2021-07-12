@@ -1,10 +1,11 @@
 
 # Bibliotecas -------------------------------------------------------------
 library(rio)
+library(ggmap)
 
 # Registro da API do Google -----------------------------------------------
-# API <- "A API foi inserida aqui"
-# register_google(key = API)
+API <- "AIzaSyBDaPRvTxmq4eDL4DP97qPwPaiEN0Y2z6c"
+register_google(key = API)
 
 # Carrega Base de Sinistros -----------------------------------------------
 # Base de Sinistros disponível na página da Prefeitura da Cidade do Recife
@@ -34,6 +35,6 @@ sinistrosRecife <- rbind(sinistrosRecife2016Raw,
                             sinistrosRecife2021Raw)
 
 # Limpando a staging area
-rm(list=setdiff(ls(), "sinistrosRecife"))
+rm(list = setdiff(ls(), "sinistrosRecife"))
 # Exportando
-export(sinistrosRecife, "bases_tratadas/sinistrosRecife.rds")
+rio::export(sinistrosRecife, "bases_tratadas/sinistrosRecife.rds")
